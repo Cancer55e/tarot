@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>cancer.55e Stella & Tail</title>
+
+<style>
+body{
+  font-family:sans-serif;
+  background:#0a0a1a;
+  color:white;
+  text-align:center;
+  padding:40px;
+}
+
+.card{
+  margin-top:20px;
+  padding:20px;
+  border-radius:12px;
+  background:#1a1a2e;
+}
+
+input,button{
+  padding:10px;
+  font-size:16px;
+  margin:10px;
+  border-radius:6px;
+  border:none;
+}
+button{
+  background:#5c6cff;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌌 cancer.55e</h1>
+<h2>Stella & Tail Calculator</h2>
+
+<input type="date" id="birth">
+<br>
+<button onclick="calculate()">確定</button>
+
+<div id="result" class="card"></div>
+
+<script>
+
+// =====================
+// ステラ対応表
+// =====================
+const stellaCards = {
+
+3:"GENERATOR ～美の女神～",
+4:"REIGNS ～君臨する者～",
+5:"SHAMAN ～伝導師～",
+6:"DEAREST ～愛を与える者～",
+7:"VALKYRIE ～黄金戦車～",
+8:"EUSTITIA ～裁きの女神～",
+9:"ASTRONOMER ～天文学者～",
+10:"PHARAOH ～謎に包まれた存在～",
+11:"HARDY EXPLORER ～屈強な探検家～",
+12:"SAMURAI ～侍魂～",
+13:"STARS MAKER ～星を生む者～",
+14:"ALL THE RAGE ～一世風靡～",
+15:"REVOLUTIONIST ～革命家～",
+16:"TRANSFORMERS ～龍神～",
+17:"THE HERO ～優しき英雄～",
+18:"CLEVER THINKER ～月の女神～",
+19:"THE KING OF KINGS ～世界皇帝～",
+20:"CELEBRATER ～天使～",
+21:"THE CREATER ～創造主～"
+
+};
+
+
+// =====================
+// テイルイヤー対応表
+// =====================
+const tailCards = {
+
+0:"NEW BASIS ～無から生まれるステージ～",
+1:"SOW THE SEEDS ～プロジェクトの始動～",
+2:"ROOTS GROW ～根を張る～",
+3:"A VAST FOREST ～生産性と集合～",
+4:"TACTICS ～君臨と組織～",
+5:"LEARNING ～知識の習得～",
+6:"BUDDY ～仲間～",
+7:"SWITCH ～切り替え～",
+8:"JUDGEMENT ～判定～",
+9:"DISTANT STAR ～遠い星～",
+10:"MOVEMENT AND CHANGE ～移動と変化～",
+11:"DIVISION POINT ～分岐点～",
+12:"CONTROL ～律する～",
+13:"SKIP ABOUT ～浄化・移動・開花～",
+14:"TRANSFER ～気づきと未来～",
+15:"DESIRE ～欲望とエネルギー～",
+16:"SCRAP AND BUILD ～破壊と再生～",
+17:"NEW STELLAR ～新しい星～",
+18:"ILLUSION ～幻想～",
+19:"CORRECT ～正解～",
+20:"COMPLETION ～完結～",
+21:"A GALAXY ～未来が創られる～"
+
+};
+
+
+// =====================
+// ステラナンバー計算
+// =====================
+function calcStella(date){
+
+  let y = date.getFullYear();
+  let m = date.getMonth()+1;
+  let d = date.getDate();
+
+  let sum = (""+y+m+d)
+    .split("")
+    .reduce((a,b)=>a+Number(b),0);
+
+  while(sum >= 22){
+    sum = sum.toString()
+      .split("")
+      .reduce((a,b)=>a+Number(b),0);
+  }
+
+  return sum;
+}
+
+
+// =====================
+// テイルイヤー計算
+// =====================
+function calcTail(date, stella){
+
+  let today = new Date();
+
+  let age = today.getFullYear() - date.getFullYear();
+
+  let birthdayThisYear =
+    new Date(today.getFullYear(), date.getMonth(), date.getDate());
+
+  if(today < birthdayThisYear){
+    age--;
+  }
+
+  let raw = age + stella;
+
+  let week = Math.floor(raw / 22) + 1;
+  let tail = raw % 22;
+
+  return { tail, week, age };
+}
+
+
+// =====================
+// 表示
+// =====================
+function calculate(){
+
+  let birth = document.getElementById("birth").value;
+  if(!birth) return;
+
+  let date = new Date(birth);
+
+  let stella = calcStella(date);
+  let tailData = calcTail(date, stella);
+
+  document.getElementById("result").innerHTML = `
+
+    <h2>結果</h2>
+
+    <h3>⭐ ステラナンバー ${stella}</h3>
+    <p>${stellaCards[stella] ?? ""}</p>
+
+    <hr>
+
+    <h3>🌙 テイルイヤー ${tailData.tail}</h3>
+    <p>${tailCards[tailData.tail]}</p>
+
+    <p>週目： ${tailData.week}</p>
+    <p>現在年齢： ${tailData.age}</p>
+  `;
+}
+
+</script>
+
+</body>
+</html>
