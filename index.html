@@ -92,57 +92,57 @@ button{
 // ステラ対応表
 // =====================
 const stellaCards = {
-3:"GENERATOR ～美の女神～",
-4:"REIGNS ～君臨する者～",
-5:"SHAMAN ～伝導師～",
-6:"DEAREST ～愛を与える者～",
-7:"VALKYRIE ～黄金戦車～",
-8:"EUSTITIA ～裁きの女神～",
-9:"ASTRONOMER ～天文学者～",
-10:"PHARAOH ～謎に包まれた存在～",
-11:"HARDY EXPLORER ～屈強な探検家～",
-12:"SAMURAI ～侍魂～",
-13:"STARS MAKER ～星を生む者～",
-14:"ALL THE RAGE ～一世風靡～",
-15:"REVOLUTIONIST ～革命家～",
-16:"TRANSFORMERS ～龍神～",
-17:"THE HERO ～優しき英雄～",
-18:"CLEVER THINKER ～月の女神～",
-19:"THE KING OF KINGS ～世界皇帝～",
-20:"CELEBRATER ～天使～",
-21:"THE CREATER ～創造主～"
+  3:"GENERATOR ～美の女神～",
+  4:"REIGNS ～君臨する者～",
+  5:"SHAMAN ～伝導師～",
+  6:"DEAREST ～愛を与える者～",
+  7:"VALKYRIE ～黄金戦車～",
+  8:"EUSTITIA ～裁きの女神～",
+  9:"ASTRONOMER ～天文学者～",
+  10:"PHARAOH ～謎に包まれた存在～",
+  11:"HARDY EXPLORER ～屈強な探検家～",
+  12:"SAMURAI ～侍魂～",
+  13:"STARS MAKER ～星を生む者～",
+  14:"ALL THE RAGE ～一世風靡～",
+  15:"REVOLUTIONIST ～革命家～",
+  16:"TRANSFORMERS ～龍神～",
+  17:"THE HERO ～優しき英雄～",
+  18:"CLEVER THINKER ～月の女神～",
+  19:"THE KING OF KINGS ～世界皇帝～",
+  20:"CELEBRATER ～天使～",
+  21:"THE CREATER ～創造主～"
 };
 
 // =====================
 // テイルイヤー対応表
 // =====================
 const tailCards = {
-0:"NEW BASIS ～無から生まれるステージ～",
-1:"SOW THE SEEDS ～プロジェクトの始動～",
-2:"ROOTS GROW ～根を張る～",
-3:"A VAST FOREST ～生産性と集合～",
-4:"TACTICS ～君臨と組織～",
-5:"LEARNING ～知識の習得～",
-6:"BUDDY ～仲間～",
-7:"SWITCH ～切り替え～",
-8:"JUDGEMENT ～判定～",
-9:"DISTANT STAR ～遠い星～",
-10:"MOVEMENT AND CHANGE ～移動と変化～",
-11:"DIVISION POINT ～分岐点～",
-12:"CONTROL ～律する～",
-13:"SKIP ABOUT ～浄化・移動・開花～",
-14:"TRANSFER ～気づきと未来～",
-15:"DESIRE ～欲望とエネルギー～",
-16:"SCRAP AND BUILD ～破壊と再生～",
-17:"NEW STELLAR ～新しい星～",
-18:"ILLUSION ～幻想～",
-19:"CORRECT ～正解～",
-20:"COMPLETION ～完結～",
-21:"A GALAXY ～未来が創られる～"
+  0:"NEW BASIS ～無から生まれるステージ～",
+  1:"SOW THE SEEDS ～プロジェクトの始動～",
+  2:"ROOTS GROW ～根を張る～",
+  3:"A VAST FOREST ～生産性と集合～",
+  4:"TACTICS ～君臨と組織～",
+  5:"LEARNING ～知識の習得～",
+  6:"BUDDY ～仲間～",
+  7:"SWITCH ～切り替え～",
+  8:"JUDGEMENT ～判定～",
+  9:"DISTANT STAR ～遠い星～",
+  10:"MOVEMENT AND CHANGE ～移動と変化～",
+  11:"DIVISION POINT ～分岐点～",
+  12:"CONTROL ～律する～",
+  13:"SKIP ABOUT ～浄化・移動・開花～",
+  14:"TRANSFER ～気づきと未来～",
+  15:"DESIRE ～欲望とエネルギー～",
+  16:"SCRAP AND BUILD ～破壊と再生～",
+  17:"NEW STELLAR ～新しい星～",
+  18:"ILLUSION ～幻想～",
+  19:"CORRECT ～正解～",
+  20:"COMPLETION ～完結～",
+  21:"A GALAXY ～未来が創られる～"
 };
 
 // =====================
-// ステラナンバー計算
+// ステラナンバー計算（誕生日のみ）
 // =====================
 function calcStella(date){
   let y = date.getFullYear();
@@ -153,16 +153,21 @@ function calcStella(date){
     .split("")
     .reduce((a,b)=>a + Number(b), 0);
 
+  // 22以上なら「二桁を足す」を繰り返す
   while(sum >= 22){
     sum = sum.toString()
       .split("")
       .reduce((a,b)=>a + Number(b), 0);
   }
+
   return sum;
 }
 
 // =====================
-// テイルイヤー計算（週目＝年齢基準）
+// テイルイヤー計算（週目＝raw基準）
+// raw = 年齢 + ステラ
+// tail = raw % 22
+// week = floor(raw / 22) + 1
 // =====================
 function calcTail(date, stella){
   let today = new Date();
@@ -171,12 +176,15 @@ function calcTail(date, stella){
   let birthdayThisYear =
     new Date(today.getFullYear(), date.getMonth(), date.getDate());
 
+  // 誕生日到達判定
   if(today < birthdayThisYear){
     age--;
   }
 
-  let tail = (age + stella) % 22;
-  let week = Math.floor(age / 22) + 1;
+  let raw = age + stella;
+
+  let tail = raw % 22;
+  let week = Math.floor(raw / 22) + 1;
 
   return { tail, week, age };
 }
@@ -198,6 +206,7 @@ function calculate(){
 
   let date = new Date(y, m, d);
 
+  // 日付バリデーション（存在しない日を弾く）
   if(
     date.getFullYear() !== y ||
     date.getMonth() !== m ||
