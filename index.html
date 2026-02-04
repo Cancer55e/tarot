@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>cancer.55e Stella & Tail</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
@@ -13,24 +13,30 @@ body{
   color:white;
   text-align:center;
   padding:20px;
-  max-width:500px;
-  margin:auto;
+}
+
+h1,h2,h3,h4{
+  margin:10px 0;
 }
 
 .card{
-  margin-top:20px;
-  padding:20px;
+  margin-top:15px;
+  padding:15px;
   border-radius:12px;
   background:#1a1a2e;
 }
 
 input,button{
-  width:100%;
-  padding:14px;
-  font-size:18px;
-  margin-top:12px;
-  border-radius:8px;
+  padding:12px;
+  font-size:16px;
+  margin:10px;
+  border-radius:6px;
   border:none;
+}
+
+input{
+  width:220px;
+  text-align:center;
 }
 
 button{
@@ -39,6 +45,27 @@ button{
   cursor:pointer;
 }
 
+.tail-container{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.tail-box{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  background:#1a1a2e;
+}
+
+.tail-current{
+  border:2px solid #5c6cff;
+}
+
+.small{
+  font-size:12px;
+  opacity:0.85;
+}
 </style>
 </head>
 
@@ -47,51 +74,20 @@ button{
 <h1>🌌 cancer.55e</h1>
 <h2>Stella & Tail Calculator</h2>
 
-<input 
-type="tel"
-id="birth"
-placeholder="例：19980715"
-maxlength="8"
-inputmode="numeric"
-/>
+<input
+  type="text"
+  id="birth"
+  placeholder="例：19980715"
+  inputmode="numeric"
+  pattern="[0-9]{8}"
+  maxlength="8">
 
+<br>
 <button onclick="calculate()">確定</button>
 
-<div id="result" class="card"></div>
+<div id="result"></div>
 
 <script>
-
-// =====================
-// 自動スラッシュ補助
-// =====================
-document.getElementById("birth").addEventListener("input", function(){
-
-  let v = this.value.replace(/\D/g,"").slice(0,8);
-  this.value = v;
-
-});
-
-
-// =====================
-// 入力解析
-// =====================
-function parseBirth(){
-
-  let input = document.getElementById("birth").value;
-
-  if(!/^\d{8}$/.test(input)){
-    alert("生年月日は8桁で入力してください");
-    return null;
-  }
-
-  let y = Number(input.substring(0,4));
-  let m = Number(input.substring(4,6));
-  let d = Number(input.substring(6,8));
-
-  return new Date(y, m-1, d);
-}
-
-
 // =====================
 // ステラ対応表
 // =====================
@@ -116,7 +112,6 @@ const stellaCards = {
 20:"CELEBRATER ～天使～",
 21:"THE CREATER ～創造主～"
 };
-
 
 // =====================
 // テイルイヤー対応表
@@ -146,39 +141,33 @@ const tailCards = {
 21:"A GALAXY ～未来が創られる～"
 };
 
-
 // =====================
-// ステラ計算
+// ステラナンバー計算
 // =====================
 function calcStella(date){
-
   let y = date.getFullYear();
-  let m = date.getMonth()+1;
+  let m = date.getMonth() + 1;
   let d = date.getDate();
 
-  let sum = (""+y+m+d)
+  let sum = ("" + y + m + d)
     .split("")
-    .reduce((a,b)=>a+Number(b),0);
+    .reduce((a,b)=>a + Number(b), 0);
 
   while(sum >= 22){
     sum = sum.toString()
       .split("")
-      .reduce((a,b)=>a+Number(b),0);
+      .reduce((a,b)=>a + Number(b), 0);
   }
-
   return sum;
 }
 
-
 // =====================
-// テイル計算
+// テイルイヤー計算（週目＝年齢基準）
 // =====================
 function calcTail(date, stella){
-
   let today = new Date();
 
   let age = today.getFullYear() - date.getFullYear();
-
   let birthdayThisYear =
     new Date(today.getFullYear(), date.getMonth(), date.getDate());
 
@@ -186,43 +175,79 @@ function calcTail(date, stella){
     age--;
   }
 
-  let raw = age + stella;
-
-  let week = Math.floor(raw / 22) + 1;
-  let tail = raw % 22;
+  let tail = (age + stella) % 22;
+  let week = Math.floor(age / 22) + 1;
 
   return { tail, week, age };
 }
-
 
 // =====================
 // 表示
 // =====================
 function calculate(){
+  let birth = document.getElementById("birth").value;
 
-  let date = parseBirth();
-  if(!date) return;
+  if(!birth || birth.length !== 8){
+    alert("生年月日を8桁（YYYYMMDD）で入力してください");
+    return;
+  }
+
+  let y = Number(birth.slice(0,4));
+  let m = Number(birth.slice(4,6)) - 1;
+  let d = Number(birth.slice(6,8));
+
+  let date = new Date(y, m, d);
+
+  if(
+    date.getFullYear() !== y ||
+    date.getMonth() !== m ||
+    date.getDate() !== d
+  ){
+    alert("正しい日付を入力してください");
+    return;
+  }
 
   let stella = calcStella(date);
   let tailData = calcTail(date, stella);
 
+  let current = tailData.tail;
+  let prev = (current + 21) % 22;
+  let next = (current + 1) % 22;
+
   document.getElementById("result").innerHTML = `
+    <div class="card">
+      <h3>⭐ ステラナンバー ${stella}</h3>
+      <p>${stellaCards[stella] ?? ""}</p>
+    </div>
 
-    <h2>結果</h2>
+    <div class="card">
+      <p class="small">${tailData.age}歳：現在の年齢</p>
+      <p class="small">${tailData.week}週目</p>
 
-    <h3>⭐ ステラナンバー ${stella}</h3>
-    <p>${stellaCards[stella] ?? ""}</p>
+      <h3>🌙 テイルイヤー</h3>
 
-    <hr>
+      <div class="tail-container">
+        <div class="tail-box" style="opacity:0.6;">
+          <p>前</p>
+          <h4>${prev}</h4>
+          <p class="small">${tailCards[prev]}</p>
+        </div>
 
-    <h3>🌙 テイルイヤー ${tailData.tail}</h3>
-    <p>${tailCards[tailData.tail]}</p>
+        <div class="tail-box tail-current">
+          <p>現在</p>
+          <h3>${current}</h3>
+          <p class="small">${tailCards[current]}</p>
+        </div>
 
-    <p>週目： ${tailData.week}</p>
-    <p>現在年齢： ${tailData.age}</p>
+        <div class="tail-box" style="opacity:0.6;">
+          <p>次</p>
+          <h4>${next}</h4>
+          <p class="small">${tailCards[next]}</p>
+        </div>
+      </div>
+    </div>
   `;
 }
-
 </script>
 
 </body>
