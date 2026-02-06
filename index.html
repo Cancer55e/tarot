@@ -164,29 +164,60 @@ function calcStella(date){
 }
 
 // =====================
-// テイルイヤー計算（週目＝raw基準）
-// raw = 年齢 + ステラ
-// tail = raw % 22
-// week = floor(raw / 22) + 1
+// 年齢計算（誕生日到達判定込み）
 // =====================
-function calcTail(date, stella){
+function calcAge(birthDate){
   let today = new Date();
 
-  let age = today.getFullYear() - date.getFullYear();
-  let birthdayThisYear =
-    new Date(today.getFullYear(), date.getMonth(), date.getDate());
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let birthdayThisYear = new Date(
+    today.getFullYear(),
+    birthDate.getMonth(),
+    birthDate.getDate()
+  );
 
-  // 誕生日到達判定
   if(today < birthdayThisYear){
     age--;
   }
+  return age;
+}
 
+// =====================
+// テイルイヤー計算
+// tail = (年齢 + ステラ) % 22
+// =====================
+function calcTailYear(age, stella){
   let raw = age + stella;
+  let tail = ((raw % 22) + 22) % 22; // 念のため負数対策
+  return { tail, raw };
+}
 
-  let tail = raw % 22;
-  let week = Math.floor(raw / 22) + 1;
+// =====================
+// 周目計算（新ルール）
+// - 0〜18歳：0周目（庇護）
+// - 19歳以降：最初に「テイル0（rawが22の倍数）」に来た瞬間に1周目スタート
+// - 以降、テイル0を迎えるたびに +1周
+// =====================
+function calcWeek(age, stella){
+  if(age <= 18){
+    return 0; // 周目0（庇護）
+  }
 
-  return { tail, week, age };
+  const raw = age + stella;
+
+  // 19歳時点のraw
+  const startRaw = 19 + stella;
+
+  // 19歳以降で最初にテイル0になるraw（22の倍数）を求める
+  const firstMultiple = Math.ceil(startRaw / 22) * 22;
+
+  // まだ最初のテイル0に到達していない場合は0周目
+  if(raw < firstMultiple){
+    return 0;
+  }
+
+  // 最初のテイル0で1周目、その後22進むごとに+1
+  return 1 + Math.floor((raw - firstMultiple) / 22);
 }
 
 // =====================
@@ -206,7 +237,7 @@ function calculate(){
 
   let date = new Date(y, m, d);
 
-  // 日付バリデーション（存在しない日を弾く）
+  // 日付バリデーション
   if(
     date.getFullYear() !== y ||
     date.getMonth() !== m ||
@@ -217,11 +248,19 @@ function calculate(){
   }
 
   let stella = calcStella(date);
-  let tailData = calcTail(date, stella);
+  let age = calcAge(date);
+
+  let tailData = calcTailYear(age, stella);
+  let week = calcWeek(age, stella);
 
   let current = tailData.tail;
   let prev = (current + 21) % 22;
   let next = (current + 1) % 22;
+
+  // 周目の補足表示（0周目だけ）
+  let weekNote = (week === 0)
+    ? `<p class="small">※ 19歳以降、最初にテイルイヤー0を迎えた瞬間に1周目が開始</p>`
+    : ``;
 
   document.getElementById("result").innerHTML = `
     <div class="card">
@@ -230,8 +269,9 @@ function calculate(){
     </div>
 
     <div class="card">
-      <p class="small">${tailData.age}歳：現在の年齢</p>
-      <p class="small">${tailData.week}週目</p>
+      <p class="small">${age}歳：現在の年齢</p>
+      <p class="small">${week}周目</p>
+      ${weekNote}
 
       <h3>🌙 テイルイヤー</h3>
 
