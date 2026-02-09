@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>cancer.55e Stella</title>
+<title>cancer.55e Stella & Tail</title>
 
 <style>
 body{
@@ -46,19 +46,20 @@ button{
   background:#1a1a2e;
 }
 
+.small{
+  font-size:14px;
+  opacity:0.8;
+}
+
+/* ★ ステラ画像用 */
 .stella-img{
   width:220px;
   max-width:80vw;
   height:auto;
-  margin:12px auto;
+  margin:14px auto;
   display:block;
   border-radius:14px;
   box-shadow:0 12px 32px rgba(0,0,0,0.45);
-}
-
-.small{
-  font-size:14px;
-  opacity:0.8;
 }
 </style>
 </head>
@@ -66,7 +67,7 @@ button{
 <body>
 
 <h1>🌌 cancer.55e</h1>
-<h2>Stella Calculator</h2>
+<h2>Stella & Tail Calculator</h2>
 
 <input type="date" id="birth">
 <br>
@@ -101,7 +102,35 @@ const stellaCards = {
 };
 
 // =====================
-// 便利関数
+// テイル対応表
+// =====================
+const tailCards = {
+  0:"NEW BASIS ～無から生まれる～",
+  1:"SOW THE SEEDS ～始動～",
+  2:"ROOTS GROW ～根を張る～",
+  3:"A VAST FOREST ～集合と生産～",
+  4:"TACTICS ～戦略～",
+  5:"LEARNING ～学び～",
+  6:"BUDDY ～仲間～",
+  7:"SWITCH ～切り替え～",
+  8:"JUDGEMENT ～均衡～",
+  9:"DISTANT STAR ～展望～",
+  10:"MOVEMENT ～変化～",
+  11:"DIVISION POINT ～分岐～",
+  12:"CONTROL ～集中～",
+  13:"SKIP ABOUT ～浄化と移動～",
+  14:"TRANSFER ～気づき～",
+  15:"DESIRE ～欲望～",
+  16:"SCRAP AND BUILD ～破壊と再生～",
+  17:"NEW STELLAR ～希望～",
+  18:"ILLUSION ～幻想～",
+  19:"CORRECT ～決定～",
+  20:"COMPLETION ～完結～",
+  21:"A GALAXY ～未来～"
+};
+
+// =====================
+// ★ 画像用ユーティリティ
 // =====================
 function pad2(n){
   return String(n).padStart(2, "0");
@@ -133,6 +162,27 @@ function calcStella(date){
 }
 
 // =====================
+// テイル＆周目計算
+// =====================
+function calcTail(date, stella){
+  const today = new Date();
+
+  let age = today.getFullYear() - date.getFullYear();
+  const birthdayThisYear =
+    new Date(today.getFullYear(), date.getMonth(), date.getDate());
+
+  if(today < birthdayThisYear){
+    age--;
+  }
+
+  const raw = age + stella;
+  const tail = ((raw % 22) + 22) % 22;
+  const week = Math.floor(raw / 22) + 1;
+
+  return { age, tail, week };
+}
+
+// =====================
 // 表示処理
 // =====================
 function calculate(){
@@ -141,11 +191,15 @@ function calculate(){
   if(!birth) return;
 
   const date = new Date(birth);
+
   const stella = calcStella(date);
+  const tailData = calcTail(date, stella);
   const stellaImg = stellaImgPath(stella);
 
   document.getElementById("result").innerHTML = `
     <div class="card">
+      <p class="small">${tailData.age}歳：現在の年齢</p>
+
       <h3>⭐ ステラナンバー ${stella}</h3>
       <p>${stellaCards[stella] ?? ""}</p>
 
@@ -155,6 +209,13 @@ function calculate(){
         alt="Stella ${stella}"
         onerror="this.style.display='none'"
       >
+
+      <hr>
+
+      <h3>🌙 テイルナンバー ${tailData.tail}</h3>
+      <p>${tailCards[tailData.tail] ?? ""}</p>
+
+      <p class="small">現在：${tailData.week}周目</p>
     </div>
   `;
 }
@@ -162,4 +223,3 @@ function calculate(){
 
 </body>
 </html>
-q
