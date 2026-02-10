@@ -2,35 +2,41 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>cancer.55e Stella & Tail</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-  font-family: sans-serif;
+  font-family:sans-serif;
   background:#0a0a1a;
   color:white;
   text-align:center;
-  padding:32px 16px;
+  padding:20px;
 }
 
-h1{
-  margin-bottom:4px;
+h1,h2,h3,h4{
+  margin:10px 0;
 }
 
-h2{
-  font-weight:normal;
-  opacity:0.85;
-  margin-top:0;
+.card{
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#1a1a2e;
 }
 
-input, button{
-  padding:10px;
+input,button{
+  padding:12px;
   font-size:16px;
-  margin:8px;
+  margin:10px;
   border-radius:6px;
   border:none;
+}
+
+input{
+  width:220px;
+  text-align:center;
 }
 
 button{
@@ -39,27 +45,26 @@ button{
   cursor:pointer;
 }
 
-.card{
-  margin-top:20px;
-  padding:20px;
-  border-radius:14px;
+.tail-container{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.tail-box{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
   background:#1a1a2e;
 }
 
-.small{
-  font-size:14px;
-  opacity:0.8;
+.tail-current{
+  border:2px solid #5c6cff;
 }
 
-/* ★ ステラ画像用 */
-.stella-img{
-  width:220px;
-  max-width:80vw;
-  height:auto;
-  margin:14px auto;
-  display:block;
-  border-radius:14px;
-  box-shadow:0 12px 32px rgba(0,0,0,0.45);
+.small{
+  font-size:12px;
+  opacity:0.85;
 }
 </style>
 </head>
@@ -69,7 +74,14 @@ button{
 <h1>🌌 cancer.55e</h1>
 <h2>Stella & Tail Calculator</h2>
 
-<input type="date" id="birth">
+<input
+  type="text"
+  id="birth"
+  placeholder="例：19980715"
+  inputmode="numeric"
+  pattern="[0-9]{8}"
+  maxlength="8">
+
 <br>
 <button onclick="calculate()">確定</button>
 
@@ -102,46 +114,35 @@ const stellaCards = {
 };
 
 // =====================
-// テイル対応表
+// テイルイヤー対応表
 // =====================
 const tailCards = {
-  0:"NEW BASIS ～無から生まれる～",
-  1:"SOW THE SEEDS ～始動～",
+  0:"NEW BASIS ～無から生まれるステージ～",
+  1:"SOW THE SEEDS ～プロジェクトの始動～",
   2:"ROOTS GROW ～根を張る～",
-  3:"A VAST FOREST ～集合と生産～",
-  4:"TACTICS ～戦略～",
-  5:"LEARNING ～学び～",
+  3:"A VAST FOREST ～生産性と集合～",
+  4:"TACTICS ～君臨と組織～",
+  5:"LEARNING ～知識の習得～",
   6:"BUDDY ～仲間～",
   7:"SWITCH ～切り替え～",
-  8:"JUDGEMENT ～均衡～",
-  9:"DISTANT STAR ～展望～",
-  10:"MOVEMENT ～変化～",
-  11:"DIVISION POINT ～分岐～",
-  12:"CONTROL ～集中～",
-  13:"SKIP ABOUT ～浄化と移動～",
-  14:"TRANSFER ～気づき～",
-  15:"DESIRE ～欲望～",
+  8:"JUDGEMENT ～判定～",
+  9:"DISTANT STAR ～遠い星～",
+  10:"MOVEMENT AND CHANGE ～移動と変化～",
+  11:"DIVISION POINT ～分岐点～",
+  12:"CONTROL ～律する～",
+  13:"SKIP ABOUT ～浄化・移動・開花～",
+  14:"TRANSFER ～気づきと未来～",
+  15:"DESIRE ～欲望とエネルギー～",
   16:"SCRAP AND BUILD ～破壊と再生～",
-  17:"NEW STELLAR ～希望～",
+  17:"NEW STELLAR ～新しい星～",
   18:"ILLUSION ～幻想～",
-  19:"CORRECT ～決定～",
+  19:"CORRECT ～正解～",
   20:"COMPLETION ～完結～",
-  21:"A GALAXY ～未来～"
+  21:"A GALAXY ～未来が創られる～"
 };
 
 // =====================
-// ★ 画像用ユーティリティ
-// =====================
-function pad2(n){
-  return String(n).padStart(2, "0");
-}
-
-function stellaImgPath(stella){
-  return `img/stella/${pad2(stella)}.png`;
-}
-
-// =====================
-// ステラ計算
+// ステラナンバー計算（誕生日のみ）
 // =====================
 function calcStella(date){
   let y = date.getFullYear();
@@ -152,6 +153,7 @@ function calcStella(date){
     .split("")
     .reduce((a,b)=>a + Number(b), 0);
 
+  // 22以上なら「二桁を足す」を繰り返す
   while(sum >= 22){
     sum = sum.toString()
       .split("")
@@ -162,60 +164,136 @@ function calcStella(date){
 }
 
 // =====================
-// テイル＆周目計算
+// 年齢計算（誕生日到達判定込み）
 // =====================
-function calcTail(date, stella){
-  const today = new Date();
+function calcAge(birthDate){
+  let today = new Date();
 
-  let age = today.getFullYear() - date.getFullYear();
-  const birthdayThisYear =
-    new Date(today.getFullYear(), date.getMonth(), date.getDate());
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let birthdayThisYear = new Date(
+    today.getFullYear(),
+    birthDate.getMonth(),
+    birthDate.getDate()
+  );
 
   if(today < birthdayThisYear){
     age--;
   }
-
-  const raw = age + stella;
-  const tail = ((raw % 22) + 22) % 22;
-  const week = Math.floor(raw / 22) + 1;
-
-  return { age, tail, week };
+  return age;
 }
 
 // =====================
-// 表示処理
+// テイルイヤー計算
+// tail = (年齢 + ステラ) % 22
+// =====================
+function calcTailYear(age, stella){
+  let raw = age + stella;
+  let tail = ((raw % 22) + 22) % 22; // 念のため負数対策
+  return { tail, raw };
+}
+
+// =====================
+// 周目計算（新ルール）
+// - 0〜18歳：0周目（庇護）
+// - 19歳以降：最初に「テイル0（rawが22の倍数）」に来た瞬間に1周目スタート
+// - 以降、テイル0を迎えるたびに +1周
+// =====================
+function calcWeek(age, stella){
+  if(age <= 18){
+    return 0; // 周目0（庇護）
+  }
+
+  const raw = age + stella;
+
+  // 19歳時点のraw
+  const startRaw = 19 + stella;
+
+  // 19歳以降で最初にテイル0になるraw（22の倍数）を求める
+  const firstMultiple = Math.ceil(startRaw / 22) * 22;
+
+  // まだ最初のテイル0に到達していない場合は0周目
+  if(raw < firstMultiple){
+    return 0;
+  }
+
+  // 最初のテイル0で1周目、その後22進むごとに+1
+  return 1 + Math.floor((raw - firstMultiple) / 22);
+}
+
+// =====================
+// 表示
 // =====================
 function calculate(){
+  let birth = document.getElementById("birth").value;
 
-  const birth = document.getElementById("birth").value;
-  if(!birth) return;
+  if(!birth || birth.length !== 8){
+    alert("生年月日を8桁（YYYYMMDD）で入力してください");
+    return;
+  }
 
-  const date = new Date(birth);
+  let y = Number(birth.slice(0,4));
+  let m = Number(birth.slice(4,6)) - 1;
+  let d = Number(birth.slice(6,8));
 
-  const stella = calcStella(date);
-  const tailData = calcTail(date, stella);
-  const stellaImg = stellaImgPath(stella);
+  let date = new Date(y, m, d);
+
+  // 日付バリデーション
+  if(
+    date.getFullYear() !== y ||
+    date.getMonth() !== m ||
+    date.getDate() !== d
+  ){
+    alert("正しい日付を入力してください");
+    return;
+  }
+
+  let stella = calcStella(date);
+  let age = calcAge(date);
+
+  let tailData = calcTailYear(age, stella);
+  let week = calcWeek(age, stella);
+
+  let current = tailData.tail;
+  let prev = (current + 21) % 22;
+  let next = (current + 1) % 22;
+
+  // 周目の補足表示（0周目だけ）
+  let weekNote = (week === 0)
+    ? `<p class="small">※ 19歳以降、最初にテイルイヤー0を迎えた瞬間に1周目が開始</p>`
+    : ``;
 
   document.getElementById("result").innerHTML = `
     <div class="card">
-      <p class="small">${tailData.age}歳：現在の年齢</p>
-
       <h3>⭐ ステラナンバー ${stella}</h3>
       <p>${stellaCards[stella] ?? ""}</p>
+    </div>
 
-      <img
-        class="stella-img"
-        src="${stellaImg}"
-        alt="Stella ${stella}"
-        onerror="this.style.display='none'"
-      >
+    <div class="card">
+      <p class="small">${age}歳：現在の年齢</p>
+      <p class="small">${week}周目</p>
+      ${weekNote}
 
-      <hr>
+      <h3>🌙 テイルイヤー</h3>
 
-      <h3>🌙 テイルナンバー ${tailData.tail}</h3>
-      <p>${tailCards[tailData.tail] ?? ""}</p>
+      <div class="tail-container">
+        <div class="tail-box" style="opacity:0.6;">
+          <p>前</p>
+          <h4>${prev}</h4>
+          <p class="small">${tailCards[prev]}</p>
+        </div>
 
-      <p class="small">現在：${tailData.week}周目</p>
+        <div class="tail-box tail-current">
+          <p>現在</p>
+          <h3>${current}</h3>
+          <p class="small">${tailCards[current]}</p>
+        </div>
+
+        <div class="tail-box" style="opacity:0.6;">
+          <p>次</p>
+          <h4>${next}</h4>
+          <p class="small">${tailCards[next]}</p>
+        </div>
+      </div>
     </div>
   `;
 }
