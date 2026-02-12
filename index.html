@@ -66,6 +66,17 @@ button{
   font-size:12px;
   opacity:0.85;
 }
+
+/* ステラ画像 */
+.stella-img{
+  width:220px;
+  max-width:80vw;
+  height:auto;
+  margin:12px auto 0;
+  display:block;
+  border-radius:12px;
+  box-shadow:0 12px 32px rgba(0,0,0,0.45);
+}
 </style>
 </head>
 
@@ -142,7 +153,17 @@ const tailCards = {
 };
 
 // =====================
-// ステラナンバー計算（誕生日のみ）
+// 画像パス（img/stella/03.png ～）
+// =====================
+function pad2(n){
+  return String(n).padStart(2, "0");
+}
+function stellaImgPath(stella){
+  return `img/stella/${pad2(stella)}.png`;
+}
+
+// =====================
+// ステラナンバー計算
 // =====================
 function calcStella(date){
   let y = date.getFullYear();
@@ -153,23 +174,21 @@ function calcStella(date){
     .split("")
     .reduce((a,b)=>a + Number(b), 0);
 
-  // 22以上なら「二桁を足す」を繰り返す
   while(sum >= 22){
     sum = sum.toString()
       .split("")
       .reduce((a,b)=>a + Number(b), 0);
   }
-
   return sum;
 }
 
 // =====================
-// 年齢計算（誕生日到達判定込み）
+// 年齢計算
 // =====================
 function calcAge(birthDate){
   let today = new Date();
-
   let age = today.getFullYear() - birthDate.getFullYear();
+
   let birthdayThisYear = new Date(
     today.getFullYear(),
     birthDate.getMonth(),
@@ -184,39 +203,29 @@ function calcAge(birthDate){
 
 // =====================
 // テイルイヤー計算
-// tail = (年齢 + ステラ) % 22
 // =====================
 function calcTailYear(age, stella){
   let raw = age + stella;
-  let tail = ((raw % 22) + 22) % 22; // 念のため負数対策
+  let tail = ((raw % 22) + 22) % 22;
   return { tail, raw };
 }
 
 // =====================
-// 周目計算（新ルール）
-// - 0〜18歳：0周目（庇護）
-// - 19歳以降：最初に「テイル0（rawが22の倍数）」に来た瞬間に1周目スタート
-// - 以降、テイル0を迎えるたびに +1周
+// 周目計算（確定ルール）
 // =====================
 function calcWeek(age, stella){
   if(age <= 18){
-    return 0; // 周目0（庇護）
+    return 0;
   }
 
   const raw = age + stella;
-
-  // 19歳時点のraw
   const startRaw = 19 + stella;
-
-  // 19歳以降で最初にテイル0になるraw（22の倍数）を求める
   const firstMultiple = Math.ceil(startRaw / 22) * 22;
 
-  // まだ最初のテイル0に到達していない場合は0周目
   if(raw < firstMultiple){
     return 0;
   }
 
-  // 最初のテイル0で1周目、その後22進むごとに+1
   return 1 + Math.floor((raw - firstMultiple) / 22);
 }
 
@@ -224,6 +233,7 @@ function calcWeek(age, stella){
 // 表示
 // =====================
 function calculate(){
+
   let birth = document.getElementById("birth").value;
 
   if(!birth || birth.length !== 8){
@@ -237,7 +247,6 @@ function calculate(){
 
   let date = new Date(y, m, d);
 
-  // 日付バリデーション
   if(
     date.getFullYear() !== y ||
     date.getMonth() !== m ||
@@ -257,7 +266,6 @@ function calculate(){
   let prev = (current + 21) % 22;
   let next = (current + 1) % 22;
 
-  // 周目の補足表示（0周目だけ）
   let weekNote = (week === 0)
     ? `<p class="small">※ 19歳以降、最初にテイルイヤー0を迎えた瞬間に1周目が開始</p>`
     : ``;
@@ -266,6 +274,13 @@ function calculate(){
     <div class="card">
       <h3>⭐ ステラナンバー ${stella}</h3>
       <p>${stellaCards[stella] ?? ""}</p>
+
+      <img
+        class="stella-img"
+        src="${stellaImgPath(stella)}"
+        alt="Stella ${stella}"
+        onerror="this.style.display='none'"
+      >
     </div>
 
     <div class="card">
