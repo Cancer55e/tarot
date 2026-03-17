@@ -326,10 +326,80 @@ document.getElementById("result").innerHTML=`
 
 </div>
 
+<hr>
+
+<h3>🔎 何歳のテイルイヤーを見る？</h3>
+
+<input
+type="number"
+id="ageLook"
+placeholder="例：27"
+min="0"
+max="120">
+
+<button onclick="lookTail(${stella})">
+確定
+</button>
+
+<div id="lookResult"></div>
+
 `;
 
 }
 
+function lookTail(stella){
+
+let age=document.getElementById("ageLook").value;
+
+if(age===""){
+alert("年齢を入力してください");
+return;
+}
+
+age=Number(age);
+
+let tail=(age+stella)%22;
+if(tail<0) tail+=22;
+
+let prev=(tail+21)%22;
+let next=(tail+1)%22;
+
+let week=calcWeek(age,stella);
+
+document.getElementById("lookResult").innerHTML=`
+
+<div class="card">
+
+<p class="small">${age}歳</p>
+<p class="small">${week}周目</p>
+
+<div class="tail-container">
+
+<div class="tail-box">
+<p>前</p>
+<h4>${prev}</h4>
+<p class="small">${tailCards[prev]}</p>
+</div>
+
+<div class="tail-box tail-current">
+<p>指定</p>
+<h3>${tail}</h3>
+<p class="small">${tailCards[tail]}</p>
+</div>
+
+<div class="tail-box">
+<p>次</p>
+<h4>${next}</h4>
+<p class="small">${tailCards[next]}</p>
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
 </script>
 
 </body>
