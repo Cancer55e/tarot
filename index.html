@@ -382,7 +382,7 @@ let currentWeek = null;
 // ユーティリティ
 // =====================
 function stellaImgPath(stella){
-return `cards/stella${stella}.png`;
+return `img/stella/${String(stella).padStart(2,"0")}.png`;
 }
 
 function getStellaParts(stella){
@@ -923,8 +923,7 @@ if(!bg) return;
 
 const cards = [];
 for(let i=3; i<=21; i++){
-cards.push(`cards/stella${i}.png`);
-}
+cards.push(`img/stella/${String(i).padStart(2,"0")}.png`);
 
 const cols = 4;
 const rows = 6;
