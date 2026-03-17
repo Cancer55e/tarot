@@ -460,6 +460,31 @@ document.getElementById("pairResult").innerHTML=`
 `;
 
 }
+function shareResult(){
+
+let url = window.location.href;
+
+let text =
+"cancer.55e Stella & Tail\n" +
+"ステラナンバー診断\n\n" +
+url;
+
+if(navigator.share){
+
+navigator.share({
+title:"Stella & Tail",
+text:text,
+url:url
+});
+
+}else{
+
+navigator.clipboard.writeText(url);
+alert("URLをコピーしました");
+
+}
+
+}
 </script>
 
 </body>
