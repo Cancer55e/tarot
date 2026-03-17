@@ -3,17 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <title>cancer.55e Stella & Tail</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{
+--bg:#0a0a1a;
+--card:#1a1a2e;
+--line:rgba(255,255,255,0.12);
+--accent:#5c6cff;
+--sub:#2a2a4a;
+--text:#ffffff;
+}
+
+*{
+box-sizing:border-box;
+}
 
 body{
+margin:0;
 font-family:sans-serif;
-background:#0a0a1a;
-color:white;
+background:var(--bg);
+color:var(--text);
 text-align:center;
 padding:20px;
+position:relative;
+min-height:100vh;
+overflow-x:hidden;
+}
+
+/* 背景カード */
+.background-cards{
+position:fixed;
+inset:0;
+z-index:0;
+pointer-events:none;
+opacity:0.08;
+filter:blur(2px);
+overflow:hidden;
+}
+
+.background-cards img{
+position:absolute;
+width:110px;
+max-width:none;
+height:auto;
+transform-origin:center center;
+}
+
+/* 前面UI */
+.page{
+position:relative;
+z-index:1;
 }
 
 h1,h2,h3,h4{
@@ -24,7 +64,9 @@ margin:10px 0;
 margin-top:15px;
 padding:15px;
 border-radius:12px;
-background:#1a1a2e;
+background:rgba(26,26,46,0.88);
+border:1px solid rgba(255,255,255,0.05);
+backdrop-filter:blur(2px);
 }
 
 input,button{
@@ -36,16 +78,33 @@ border:none;
 }
 
 input{
-width:240px;
+width:220px;
 text-align:center;
 }
 
 button{
-background:#5c6cff;
+background:var(--accent);
 color:white;
 cursor:pointer;
 }
 
+.sub-btn{
+background:var(--sub);
+color:white;
+}
+
+.small{
+font-size:12px;
+opacity:0.85;
+}
+
+hr{
+border:none;
+border-top:1px solid var(--line);
+margin:16px 0;
+}
+
+/* Tail */
 .tail-container{
 display:flex;
 gap:10px;
@@ -57,58 +116,179 @@ flex:1;
 padding:10px;
 border-radius:10px;
 background:#1a1a2e;
+border:1px solid rgba(255,255,255,0.06);
 }
 
 .tail-current{
-border:2px solid #5c6cff;
+border:2px solid var(--accent);
 }
 
-.small{
-font-size:12px;
-opacity:0.85;
+/* 画像サイズ */
+.stella-img-large{
+width:220px;
+max-width:80vw;
+height:auto;
+margin:12px auto 0;
+display:block;
+border-radius:12px;
+box-shadow:0 12px 32px rgba(0,0,0,0.45);
 }
 
-.stella-img{
-width:200px;
-margin-top:10px;
+.stella-img-medium{
+width:150px;
+max-width:38vw;
+height:auto;
+margin:10px auto 0;
+display:block;
 border-radius:10px;
+box-shadow:0 10px 24px rgba(0,0,0,0.35);
 }
 
-.pair-grid{
+.stella-img-small{
+width:82px;
+height:auto;
+display:block;
+margin:0 auto 8px;
+border-radius:8px;
+}
+
+/* 年齢指定 */
+.age-box{
 display:flex;
 gap:10px;
+justify-content:center;
+align-items:center;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.age-input{
+width:140px;
+}
+
+.age-btn{
+padding:12px 16px;
+}
+
+/* 二人のステラ */
+.pair-grid{
+display:flex;
+gap:12px;
+margin-top:12px;
 }
 
 .pair-card{
 flex:1;
+padding:12px;
+border-radius:12px;
 background:#1a1a2e;
-padding:10px;
-border-radius:10px;
+border:1px solid rgba(255,255,255,0.06);
+}
+
+/* 保存UI */
+.save-box{
+display:flex;
+gap:10px;
+justify-content:center;
+align-items:center;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.save-input{
+width:180px;
+}
+
+.saved-wrap{
+margin-top:14px;
+text-align:left;
+}
+
+.saved-title{
+text-align:center;
+margin-bottom:10px;
 }
 
 .saved-scroll{
 display:flex;
-gap:10px;
+gap:12px;
 overflow-x:auto;
-margin-top:10px;
+padding:4px 2px 8px;
+scroll-snap-type:x proximity;
 }
 
 .saved-item{
-min-width:110px;
+min-width:120px;
+max-width:120px;
 background:#1a1a2e;
-border-radius:10px;
+border-radius:12px;
 padding:10px;
+position:relative;
+border:1px solid rgba(255,255,255,0.06);
+scroll-snap-align:start;
+cursor:pointer;
+flex:0 0 auto;
 }
 
-.saved-item img{
-width:70px;
+.saved-name{
+font-size:13px;
+font-weight:bold;
+margin-bottom:4px;
+text-align:center;
 }
 
+.saved-meta{
+font-size:11px;
+opacity:0.9;
+line-height:1.4;
+text-align:center;
+}
+
+.delete-btn{
+position:absolute;
+top:6px;
+right:6px;
+width:20px;
+height:20px;
+line-height:20px;
+text-align:center;
+border-radius:50%;
+background:rgba(255,255,255,0.12);
+font-size:12px;
+cursor:pointer;
+}
+
+/* 共有 */
+.share-box{
+margin-top:14px;
+}
+
+/* スマホ調整 */
+@media (max-width: 680px){
+.tail-container{
+flex-direction:column;
+}
+
+.pair-grid{
+flex-direction:row;
+}
+
+.pair-card{
+min-width:0;
+}
+
+.stella-img-medium{
+width:130px;
+max-width:34vw;
+}
+}
 </style>
 </head>
-
 <body>
 
+<div class="background-cards" id="backgroundCards"></div>
+
+<div class="page">
 <h1>🌌 cancer.55e</h1>
 <h2>Stella & Tail Calculator</h2>
 
@@ -116,20 +296,31 @@ width:70px;
 type="text"
 id="birth"
 placeholder="例：19980715"
-maxlength="8"
 inputmode="numeric"
+pattern="[0-9]{8}"
+maxlength="8"
 oninput="autoCalc()">
 
+<br>
+
+<button onclick="calculate()">確定</button>
+
+<br>
+
+<button
+onclick="window.open('https://forms.gle/LiwjmtMnV2Hrj9jz5','_blank')"
+class="sub-btn">
+お問い合わせ
+</button>
+
 <div id="result"></div>
+</div>
 
 <script>
-
-//=====================
-// ステラカード
-//=====================
-
+// =====================
+// ステラ対応表
+// =====================
 const stellaCards = {
-
 3:"GENERATOR ～美の女神～",
 4:"REIGNS ～君臨する者～",
 5:"SHAMAN ～伝導師～",
@@ -149,225 +340,624 @@ const stellaCards = {
 19:"THE KING OF KINGS ～世界皇帝～",
 20:"CELEBRATER ～天使～",
 21:"THE CREATER ～創造主～"
-
 };
 
-//=====================
-// テイルカード
-//=====================
-
+// =====================
+// テイル対応表
+// =====================
 const tailCards = {
-
-0:"NEW BASIS",
-1:"SOW THE SEEDS",
-2:"ROOTS GROW",
-3:"A VAST FOREST",
-4:"TACTICS",
-5:"LEARNING",
-6:"BUDDY",
-7:"SWITCH",
-8:"JUDGEMENT",
-9:"DISTANT STAR",
-10:"MOVEMENT AND CHANGE",
-11:"DIVISION POINT",
-12:"CONTROL",
-13:"SKIP ABOUT",
-14:"TRANSFER",
-15:"DESIRE",
-16:"SCRAP AND BUILD",
-17:"NEW STELLAR",
-18:"ILLUSION",
-19:"CORRECT",
-20:"COMPLETION",
-21:"A GALAXY"
-
+0:"NEW BASIS ～無から生まれるステージ～",
+1:"SOW THE SEEDS ～プロジェクトの始動～",
+2:"ROOTS GROW ～根を張る～",
+3:"A VAST FOREST ～生産性と集合～",
+4:"TACTICS ～君臨と組織～",
+5:"LEARNING ～知識の習得～",
+6:"BUDDY ～仲間～",
+7:"SWITCH ～切り替え～",
+8:"JUDGEMENT ～判定～",
+9:"DISTANT STAR ～遠い星～",
+10:"MOVEMENT AND CHANGE ～移動と変化～",
+11:"DIVISION POINT ～分岐点～",
+12:"CONTROL ～律する～",
+13:"SKIP ABOUT ～浄化・移動・開花～",
+14:"TRANSFER ～気づきと未来～",
+15:"DESIRE ～欲望とエネルギー～",
+16:"SCRAP AND BUILD ～破壊と再生～",
+17:"NEW STELLAR ～新しい星～",
+18:"ILLUSION ～幻想～",
+19:"CORRECT ～正解～",
+20:"COMPLETION ～完結～",
+21:"A GALAXY ～未来が創られる～"
 };
 
-//=====================
-// 画像パス
-//=====================
+// =====================
+// 状態
+// =====================
+let currentBirth = "";
+let currentStella = null;
+let currentTail = null;
+let currentWeek = null;
 
+// =====================
+// ユーティリティ
+// =====================
 function stellaImgPath(stella){
-
-return `img/stella/${String(stella).padStart(2,"0")}.png`;
-
+return `cards/stella${stella}.png`;
 }
 
-//=====================
+function getStellaParts(stella){
+const label = stellaCards[stella] || "";
+const parts = label.split(" ～");
+const en = parts[0] || "";
+const jp = parts[1] ? "～" + parts[1] : "";
+return { en, jp };
+}
+
+function parseYYYYMMDD(s){
+if(!s) return null;
+const t = s.replace(/[^0-9]/g, "");
+if(t.length !== 8) return null;
+
+const y = Number(t.slice(0,4));
+const m = Number(t.slice(4,6)) - 1;
+const d = Number(t.slice(6,8));
+const date = new Date(y, m, d);
+
+if(
+date.getFullYear() !== y ||
+date.getMonth() !== m ||
+date.getDate() !== d
+) return null;
+
+return date;
+}
+
+// =====================
 // ステラ計算
-//=====================
-
+// あなたの仕様どおり
+// "" + y + m + d（ゼロ埋めしない）
+// =====================
 function calcStella(date){
+const y = date.getFullYear();
+const m = date.getMonth() + 1;
+const d = date.getDate();
 
-let y=date.getFullYear();
-let m=date.getMonth()+1;
-let d=date.getDate();
-
-let sum=(""+y+m+d)
+let sum = ("" + y + m + d)
 .split("")
-.reduce((a,b)=>a+Number(b),0);
+.reduce((a,b)=>a + Number(b), 0);
 
-while(sum>=22){
-
-sum=sum.toString()
+while(sum >= 22){
+sum = sum.toString()
 .split("")
-.reduce((a,b)=>a+Number(b),0);
-
+.reduce((a,b)=>a + Number(b), 0);
 }
 
 return sum;
-
 }
 
-//=====================
-// 年齢
-//=====================
+// =====================
+// 年齢計算
+// =====================
+function calcAge(birthDate){
+const today = new Date();
 
-function calcAge(birth){
-
-let today=new Date();
-
-let age=today.getFullYear()-birth.getFullYear();
-
-let birthday=new Date(
+let age = today.getFullYear() - birthDate.getFullYear();
+const birthdayThisYear = new Date(
 today.getFullYear(),
-birth.getMonth(),
-birth.getDate()
+birthDate.getMonth(),
+birthDate.getDate()
 );
 
-if(today<birthday) age--;
-
+if(today < birthdayThisYear){
+age--;
+}
 return age;
-
 }
 
-//=====================
-// テイル
-//=====================
-
-function tail(age,stella){
-
-return((age+stella)%22+22)%22;
-
+// =====================
+// テイル計算
+// =====================
+function tailOf(age, stella){
+const raw = age + stella;
+return ((raw % 22) + 22) % 22;
 }
 
-//=====================
-// 周目
-//=====================
-
-function calcWeek(age,stella){
-
-if(age<=18) return 0;
-
-let raw=age+stella;
-
-let start=19+stella;
-
-let first=Math.ceil(start/22)*22;
-
-if(raw<first) return 0;
-
-return 1+Math.floor((raw-first)/22);
-
+// =====================
+// 周目計算
+// 0〜18歳：0周目
+// 19歳以降：最初のテイル0で1周目開始
+// =====================
+function calcWeek(age, stella){
+if(age <= 18){
+return 0;
 }
 
-//=====================
+const raw = age + stella;
+const startRaw = 19 + stella;
+const firstMultiple = Math.ceil(startRaw / 22) * 22;
+
+if(raw < firstMultiple){
+return 0;
+}
+
+return 1 + Math.floor((raw - firstMultiple) / 22);
+}
+
+// =====================
 // 自動計算
-//=====================
-
+// =====================
 function autoCalc(){
-
-let birth=document.getElementById("birth").value;
-
-if(birth.length===8) calculate();
-
+const birth = document.getElementById("birth").value.replace(/[^0-9]/g,"");
+if(birth.length === 8){
+calculate();
+}
 }
 
-//=====================
+// =====================
 // メイン計算
-//=====================
-
+// =====================
 function calculate(){
+const birthInput = document.getElementById("birth");
+const birth = birthInput.value.replace(/[^0-9]/g,"");
 
-let birth=document.getElementById("birth").value;
+if(!birth || birth.length !== 8){
+return;
+}
 
-let y=Number(birth.slice(0,4));
-let m=Number(birth.slice(4,6))-1;
-let d=Number(birth.slice(6,8));
+const date = parseYYYYMMDD(birth);
+if(!date){
+alert("正しい日付を入力してください");
+return;
+}
 
-let date=new Date(y,m,d);
+const stella = calcStella(date);
+const ageNow = calcAge(date);
+const tailNow = tailOf(ageNow, stella);
+const weekNow = calcWeek(ageNow, stella);
 
-let stella=calcStella(date);
+currentBirth = birth;
+currentStella = stella;
+currentTail = tailNow;
+currentWeek = weekNow;
 
-let age=calcAge(date);
+const prevNow = (tailNow + 21) % 22;
+const nextNow = (tailNow + 1) % 22;
+const parts = getStellaParts(stella);
 
-let tailNow=tail(age,stella);
+const weekNote = (weekNow === 0)
+? `<p class="small">※ 19歳以降、最初にテイルイヤー0を迎えた瞬間に1周目が開始</p>`
+: ``;
 
-let week=calcWeek(age,stella);
-
-let prev=(tailNow+21)%22;
-let next=(tailNow+1)%22;
-
-document.getElementById("result").innerHTML=`
-
+document.getElementById("result").innerHTML = `
 <div class="card">
-
 <h3>⭐ ステラナンバー ${stella}</h3>
+<p>${parts.en}</p>
+<p>${parts.jp}</p>
 
-<p>${stellaCards[stella]}</p>
-
-<img class="stella-img" src="${stellaImgPath(stella)}">
-
+<img
+class="stella-img-large"
+src="${stellaImgPath(stella)}"
+alt="Stella ${stella}"
+onerror="this.style.display='none'">
 </div>
 
 <div class="card">
+<p class="small">${ageNow}歳：現在の年齢</p>
+<p class="small">${weekNow}周目</p>
+${weekNote}
 
-<p class="small">${age}歳：現在の年齢</p>
-
-<p class="small">${week}周目</p>
-
-<h3>🌙 テイルイヤー</h3>
+<h3>🌙 テイルイヤー（現在）</h3>
 
 <div class="tail-container">
-
-<div class="tail-box">
-
+<div class="tail-box" style="opacity:0.6;">
 <p>前</p>
-
-<h4>${prev}</h4>
-
-<p class="small">${tailCards[prev]}</p>
-
+<h4>${prevNow}</h4>
+<p class="small">${tailCards[prevNow] ?? ""}</p>
 </div>
 
 <div class="tail-box tail-current">
-
 <p>現在</p>
-
 <h3>${tailNow}</h3>
-
-<p class="small">${tailCards[tailNow]}</p>
-
+<p class="small">${tailCards[tailNow] ?? ""}</p>
 </div>
 
-<div class="tail-box">
-
+<div class="tail-box" style="opacity:0.6;">
 <p>次</p>
-
-<h4>${next}</h4>
-
-<p class="small">${tailCards[next]}</p>
-
+<h4>${nextNow}</h4>
+<p class="small">${tailCards[nextNow] ?? ""}</p>
+</div>
 </div>
 
+<hr>
+
+<h3>🔎 何歳のテイルイヤーを見る？</h3>
+<div class="age-box">
+<input
+type="number"
+id="ageLook"
+class="age-input"
+placeholder="例：27"
+min="0"
+max="120"
+inputmode="numeric">
+<button class="age-btn" onclick="calculateLook()">確定</button>
 </div>
 
+<div id="lookResult"></div>
+
+<hr>
+
+<h3>⭐ 二人のステラナンバーを見る</h3>
+<div class="age-box">
+<input
+type="text"
+id="partnerBirth"
+class="age-input"
+placeholder="例：19920315"
+inputmode="numeric"
+pattern="[0-9]{8}"
+maxlength="8">
+<button class="age-btn" onclick="calculatePair()">確定</button>
 </div>
 
+<div id="pairResult"></div>
+
+<hr>
+
+<div class="share-box">
+<button onclick="shareResult()">共有</button>
+</div>
+
+<hr>
+
+<h3>💾 この人を保存する</h3>
+<div class="save-box">
+<input
+type="text"
+id="saveName"
+class="save-input"
+placeholder="例：自分 / 母 / 彼女">
+<button onclick="saveCurrent()">保存</button>
+</div>
+
+<div id="savedArea"></div>
+</div>
 `;
 
+updateUrl();
+renderSaved();
 }
 
+// =====================
+// 指定年齢のテイル表示
+// =====================
+function calculateLook(){
+if(currentStella === null){
+alert("先に生年月日を入力してください");
+return;
+}
+
+const ageStr = document.getElementById("ageLook").value;
+const age = Number(ageStr);
+
+if(ageStr === "" || !Number.isFinite(age)){
+alert("年齢を入力してください");
+return;
+}
+
+if(age < 0 || age > 120){
+alert("年齢は0〜120で入力してください");
+return;
+}
+
+const tail = tailOf(age, currentStella);
+const week = calcWeek(age, currentStella);
+const prev = (tail + 21) % 22;
+const next = (tail + 1) % 22;
+
+document.getElementById("lookResult").innerHTML = `
+<div style="margin-top:12px;">
+<p class="small"><b>${age}歳</b>：指定した年齢</p>
+<p class="small">${week}周目</p>
+
+<div class="tail-container">
+<div class="tail-box" style="opacity:0.6;">
+<p>前</p>
+<h4>${prev}</h4>
+<p class="small">${tailCards[prev] ?? ""}</p>
+</div>
+
+<div class="tail-box tail-current">
+<p>指定</p>
+<h3>${tail}</h3>
+<p class="small">${tailCards[tail] ?? ""}</p>
+</div>
+
+<div class="tail-box" style="opacity:0.6;">
+<p>次</p>
+<h4>${next}</h4>
+<p class="small">${tailCards[next] ?? ""}</p>
+</div>
+</div>
+</div>
+`;
+}
+
+// =====================
+// 二人のステラ
+// =====================
+function calculatePair(){
+if(currentStella === null){
+alert("先に生年月日を入力してください");
+return;
+}
+
+const partnerBirth = document.getElementById("partnerBirth").value.replace(/[^0-9]/g,"");
+if(partnerBirth.length !== 8){
+alert("相手の生年月日を8桁で入力してください");
+return;
+}
+
+const date = parseYYYYMMDD(partnerBirth);
+if(!date){
+alert("相手の生年月日が正しくありません");
+return;
+}
+
+const partnerStella = calcStella(date);
+
+const mine = getStellaParts(currentStella);
+const partner = getStellaParts(partnerStella);
+
+document.getElementById("pairResult").innerHTML = `
+<div class="pair-grid">
+<div class="pair-card">
+<p class="small">あなた</p>
+<h4>⭐${currentStella}</h4>
+<p>${mine.en}</p>
+<p class="small">${mine.jp}</p>
+<img
+class="stella-img-medium"
+src="${stellaImgPath(currentStella)}"
+alt="Stella ${currentStella}"
+onerror="this.style.display='none'">
+</div>
+
+<div class="pair-card">
+<p class="small">相手</p>
+<h4>⭐${partnerStella}</h4>
+<p>${partner.en}</p>
+<p class="small">${partner.jp}</p>
+<img
+class="stella-img-medium"
+src="${stellaImgPath(partnerStella)}"
+alt="Stella ${partnerStella}"
+onerror="this.style.display='none'">
+</div>
+</div>
+`;
+}
+
+// =====================
+// URL更新
+// =====================
+function updateUrl(){
+if(!currentBirth) return;
+const url = new URL(window.location.href);
+url.searchParams.set("birth", currentBirth);
+history.replaceState({}, "", url.toString());
+}
+
+// =====================
+// 共有
+// =====================
+function shareResult(){
+if(!currentBirth || currentStella === null || currentTail === null) return;
+
+const parts = getStellaParts(currentStella);
+const shareUrl = new URL(window.location.href);
+shareUrl.searchParams.set("birth", currentBirth);
+
+const text =
+`cancer.55e
+
+Stella ${currentStella}
+${parts.en}
+
+Tail Year ${currentTail}
+${tailCards[currentTail] ?? ""}
+
+${shareUrl.toString()}`;
+
+if(navigator.share){
+navigator.share({
+title:"cancer.55e Stella & Tail",
+text:text,
+url:shareUrl.toString()
+}).catch(()=>{});
+}else{
+navigator.clipboard.writeText(text).then(()=>{
+alert("共有用テキストをコピーしました");
+}).catch(()=>{
+alert(text);
+});
+}
+}
+
+// =====================
+// 保存機能
+// 最大6人
+// =====================
+function getSaved(){
+try{
+return JSON.parse(localStorage.getItem("cancer55e_saved_people") || "[]");
+}catch(e){
+return [];
+}
+}
+
+function setSaved(list){
+localStorage.setItem("cancer55e_saved_people", JSON.stringify(list));
+}
+
+function saveCurrent(){
+if(!currentBirth || currentStella === null) return;
+
+const nameInput = document.getElementById("saveName");
+const name = (nameInput.value || "").trim();
+
+if(!name){
+alert("保存する名前を入力してください");
+return;
+}
+
+let saved = getSaved();
+
+// 同名なら上書き
+const existingIndex = saved.findIndex(item => item.name === name);
+
+if(existingIndex >= 0){
+saved[existingIndex] = { name, birth: currentBirth };
+}else{
+if(saved.length >= 6){
+alert("保存は最大6人までです");
+return;
+}
+saved.push({ name, birth: currentBirth });
+}
+
+setSaved(saved);
+nameInput.value = "";
+renderSaved();
+}
+
+function deleteSaved(index){
+const saved = getSaved();
+saved.splice(index, 1);
+setSaved(saved);
+renderSaved();
+}
+
+function loadSaved(index){
+const saved = getSaved();
+const item = saved[index];
+if(!item) return;
+
+document.getElementById("birth").value = item.birth;
+calculate();
+window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderSaved(){
+const area = document.getElementById("savedArea");
+if(!area) return;
+
+const saved = getSaved();
+
+if(saved.length === 0){
+area.innerHTML = `
+<div class="saved-wrap">
+<div class="saved-title small">保存した人はまだいません</div>
+</div>
+`;
+return;
+}
+
+let html = `
+<div class="saved-wrap">
+<div class="saved-title"><h4>保存した人</h4></div>
+<div class="saved-scroll">
+`;
+
+saved.forEach((item, index) => {
+const date = parseYYYYMMDD(item.birth);
+if(!date) return;
+
+const stella = calcStella(date);
+const age = calcAge(date);
+const tail = tailOf(age, stella);
+const parts = getStellaParts(stella);
+
+html += `
+<div class="saved-item" onclick="loadSaved(${index})">
+<div class="delete-btn" onclick="event.stopPropagation(); deleteSaved(${index});">×</div>
+
+<img
+class="stella-img-small"
+src="${stellaImgPath(stella)}"
+alt="Stella ${stella}"
+onerror="this.style.display='none'">
+
+<div class="saved-name">${escapeHtml(item.name)}</div>
+<div class="saved-meta">⭐${stella}</div>
+<div class="saved-meta">${parts.en}</div>
+<div class="saved-meta">🌙${tail}</div>
+</div>
+`;
+});
+
+html += `
+</div>
+</div>
+`;
+
+area.innerHTML = html;
+}
+
+function escapeHtml(str){
+return str
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+// =====================
+// 背景カード（Stellaのみ）
+// Tail画像がない前提でも動く
+// =====================
+function buildBackgroundCards(){
+const bg = document.getElementById("backgroundCards");
+if(!bg) return;
+
+const cards = [];
+for(let i=3; i<=21; i++){
+cards.push(`cards/stella${i}.png`);
+}
+
+const cols = 4;
+const rows = 6;
+const cellWidth = 100 / cols;
+const cellHeight = 100 / rows;
+
+for(let y=0; y<rows; y++){
+for(let x=0; x<cols; x++){
+const img = document.createElement("img");
+img.src = cards[Math.floor(Math.random() * cards.length)];
+img.style.left = (x * cellWidth + Math.random() * 6) + "%";
+img.style.top = (y * cellHeight + Math.random() * 6) + "%";
+img.style.transform = `rotate(${Math.random() * 26 - 13}deg)`;
+img.onerror = function(){ this.style.display = "none"; };
+bg.appendChild(img);
+}
+}
+}
+
+// =====================
+// 初期化
+// URLに birth があれば自動表示
+// =====================
+window.addEventListener("DOMContentLoaded", () => {
+buildBackgroundCards();
+
+const params = new URLSearchParams(window.location.search);
+const birth = params.get("birth");
+if(birth && birth.replace(/[^0-9]/g,"").length === 8){
+document.getElementById("birth").value = birth.replace(/[^0-9]/g,"");
+calculate();
+}
+});
 </script>
 
 </body>
