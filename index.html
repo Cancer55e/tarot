@@ -343,6 +343,22 @@ max="120">
 
 <div id="lookResult"></div>
 
+<hr>
+
+<h3>⭐ 二人のステラナンバーを見る</h3>
+
+<input
+type="text"
+id="partnerBirth"
+placeholder="例：19920315"
+maxlength="8">
+
+<button onclick="pairStella(${stella})">
+確定
+</button>
+
+<div id="pairResult"></div>
+
 `;
 
 }
@@ -397,6 +413,41 @@ document.getElementById("lookResult").innerHTML=`
 
 </div>
 
+`;
+
+}
+function pairStella(myStella){
+
+let birth=document.getElementById("partnerBirth").value;
+
+if(birth.length!==8){
+alert("生年月日を8桁で入力してください");
+return;
+}
+
+let nums=(birth).split("").map(Number);
+let sum=nums.reduce((a,b)=>a+b,0);
+
+while(sum>=22){
+sum=sum.toString().split("").map(Number).reduce((a,b)=>a+b,0);
+}
+
+let partnerStella=sum;
+
+document.getElementById("pairResult").innerHTML=`
+<div class="tail-container">
+
+<div class="tail-box">
+<p>あなた</p>
+<h3>${myStella}</h3>
+</div>
+
+<div class="tail-box tail-current">
+<p>相手</p>
+<h3>${partnerStella}</h3>
+</div>
+
+</div>
 `;
 
 }
