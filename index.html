@@ -457,9 +457,14 @@ document.getElementById("pairResult").innerHTML=`
 </div>
 
 </div>
+
+<button onclick="shareResult()" style="margin-top:20px;">
+共有
+</button>
 `;
 
 }
+  
 function shareResult(){
 
 let url = window.location.href;
@@ -485,6 +490,32 @@ alert("URLをコピーしました");
 }
 
 }
+
+function shareResult(){
+
+let url = window.location.href;
+
+let text =
+"cancer.55e Stella & Tail\n\n" +
+url;
+
+if(navigator.share){
+
+navigator.share({
+title:"Stella & Tail",
+text:text,
+url:url
+});
+
+}else{
+
+navigator.clipboard.writeText(url);
+alert("URLをコピーしました");
+
+}
+
+}
+  
 </script>
 
 </body>
