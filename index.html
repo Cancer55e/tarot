@@ -3,15 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <title>cancer.55e Stella & Tail</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+
 body{
 font-family:sans-serif;
 background:#0a0a1a;
 color:white;
 text-align:center;
 padding:20px;
+}
+
+h1,h2,h3,h4{
+margin:10px 0;
 }
 
 .card{
@@ -97,6 +103,7 @@ padding:10px;
 .saved-item img{
 width:70px;
 }
+
 </style>
 </head>
 
@@ -117,7 +124,12 @@ oninput="autoCalc()">
 
 <script>
 
+//=====================
+// ステラカード
+//=====================
+
 const stellaCards = {
+
 3:"GENERATOR ～美の女神～",
 4:"REIGNS ～君臨する者～",
 5:"SHAMAN ～伝導師～",
@@ -137,9 +149,15 @@ const stellaCards = {
 19:"THE KING OF KINGS ～世界皇帝～",
 20:"CELEBRATER ～天使～",
 21:"THE CREATER ～創造主～"
+
 };
 
+//=====================
+// テイルカード
+//=====================
+
 const tailCards = {
+
 0:"NEW BASIS",
 1:"SOW THE SEEDS",
 2:"ROOTS GROW",
@@ -162,11 +180,22 @@ const tailCards = {
 19:"CORRECT",
 20:"COMPLETION",
 21:"A GALAXY"
+
 };
 
+//=====================
+// 画像パス
+//=====================
+
 function stellaImgPath(stella){
+
 return `img/stella/${String(stella).padStart(2,"0")}.png`;
+
 }
+
+//=====================
+// ステラ計算
+//=====================
 
 function calcStella(date){
 
@@ -179,13 +208,20 @@ let sum=(""+y+m+d)
 .reduce((a,b)=>a+Number(b),0);
 
 while(sum>=22){
+
 sum=sum.toString()
 .split("")
 .reduce((a,b)=>a+Number(b),0);
+
 }
 
 return sum;
+
 }
+
+//=====================
+// 年齢
+//=====================
 
 function calcAge(birth){
 
@@ -202,11 +238,22 @@ birth.getDate()
 if(today<birthday) age--;
 
 return age;
+
 }
 
+//=====================
+// テイル
+//=====================
+
 function tail(age,stella){
+
 return((age+stella)%22+22)%22;
+
 }
+
+//=====================
+// 周目
+//=====================
 
 function calcWeek(age,stella){
 
@@ -224,6 +271,10 @@ return 1+Math.floor((raw-first)/22);
 
 }
 
+//=====================
+// 自動計算
+//=====================
+
 function autoCalc(){
 
 let birth=document.getElementById("birth").value;
@@ -231,6 +282,10 @@ let birth=document.getElementById("birth").value;
 if(birth.length===8) calculate();
 
 }
+
+//=====================
+// メイン計算
+//=====================
 
 function calculate(){
 
@@ -261,9 +316,7 @@ document.getElementById("result").innerHTML=`
 
 <p>${stellaCards[stella]}</p>
 
-<img
-class="stella-img"
-src="${stellaImgPath(stella)}">
+<img class="stella-img" src="${stellaImgPath(stella)}">
 
 </div>
 
