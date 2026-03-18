@@ -516,7 +516,28 @@ alert("URLをコピーしました");
 }
 
 }
-  
+
+function shareResult(){
+
+  const birth = document.getElementById("birth").value;
+
+  const url = "https://cancer55e.github.io/tarot/?birth=" + birth;
+
+  const text = "私のステラナンバーを調べました✨\n" + url;
+
+  if(navigator.share){
+    navigator.share({
+      title:"Stella Tarot",
+      text:text,
+      url:url
+    });
+  }else{
+    navigator.clipboard.writeText(url);
+    alert("URLをコピーしました");
+  }
+
+}
+
 </script>
 
 </body>
