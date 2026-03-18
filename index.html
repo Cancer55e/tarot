@@ -538,6 +538,14 @@ function shareResult(){
 
 }
 
+const params = new URLSearchParams(location.search);
+const birthParam = params.get("birth");
+
+if(birthParam){
+  document.getElementById("birth").value = birthParam;
+  calculate();
+}
+
 </script>
 
 </body>
